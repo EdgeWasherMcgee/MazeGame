@@ -84,7 +84,7 @@ class Maze:
                     rslt += "O"
                 else:
                     if self.isGoal(x,y):
-                        rslt += "X"
+                        rslt += '\033[32mX\033[39m'
                     else:
                         rslt += " "
             rslt += "\n"
