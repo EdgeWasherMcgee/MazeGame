@@ -6,6 +6,7 @@ class MazeBot:
         def __init__(self):
                 self.position = Maze.GetStartPos()
                 self.lastposition = ""
+                self.blocked = []
 
         def map(self):
                 b = []
@@ -19,10 +20,20 @@ class MazeBot:
                 print(b)
 
         def radar(self):
-                self.left = Maze.isWall(self.position[0] - 1, self.position[1] )
-                self.right = Maze.isWall(self.position[0] + 1, self.position[1] )
-                self.up = Maze.isWall(self.position[0], self.position[1] - 1 )
-                self.down = Maze.isWall(self.position[0], self.position[1] + 1 )
+            self.left = Maze.isWall(self.position[0] - 1, self.position[1] )
+            self.right = Maze.isWall(self.position[0] + 1, self.position[1] )
+            self.up = Maze.isWall(self.position[0], self.position[1] - 1 )
+            self.down = Maze.isWall(self.position[0], self.position[1] + 1 )
+            if self.left in self.blocked:
+                self.left = True
+            if self.right in self.blocked:
+                self.right = True
+            if self.up in self.blocked:
+                self.up = True
+            if self.down in self.blocked:
+                self.down = True
+
+
 
 
         def check(self):
@@ -40,20 +51,21 @@ class MazeBot:
 
 
         def walk(self):
+                self.blocked = []
+                end = None
                 self.radar()
                 positions = self.check()
                 if len(positions) > 1:
                         for y in range(len(positions)):
                                 if positions[y] == self.lastposition:
                                         positions.pop(y)
+                                if end == True:
+                                    self.blocked.append(self.lastposition)
+                                    end = False
+                else:
+                        end = True
                 rand = random.randrange(len(positions))
                 self.lastposition = self.position
-                self.position = positions[rand]
+                self.position = positions[rand] 
 
-
-        def run(self):
-                while self.position != o:
-                        self.walk()
-                
-
-# vim: set expandtab	
+# vim: set expandtab    

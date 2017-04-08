@@ -21,7 +21,7 @@ class Maze:
     spaceObject = "Space"
     goalObject = "apple"
 
-    def __init__(self, size_x = 20, size_y = 20 ):
+    def __init__(self, size_x = 21, size_y = 21 ):
         if 0 == size_x % 2 or 0 == size_x % 2:
             print("Should be called with odd arguments")
             return
