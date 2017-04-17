@@ -50,7 +50,7 @@ class Maze:
 
 
     def getStartPos( self ):
-        return (start_x, start_y)
+        return (self.start_x, self.start_y)
 
     def __fillWithWalls(self):
         for y in range(self.size_y):
