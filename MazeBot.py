@@ -1,4 +1,6 @@
 #This is going to be a bot that runs through a random generated maze
+#\033[2D = Flytta bakåt 2 steg vänster(D), C höger, A upp, B ner
+#\033[3;12F = Första Rad, andra Kolumn, ; för att skillja dem åt
 import time
 import copy
 import MazeMap
@@ -6,7 +8,7 @@ import random
 class MazeBot:
         def __init__(self):
             self.blocked = []
-            self.maze = MazeMap.Maze(81,21)
+            self.maze = MazeMap.Maze(81,31)
             self.position = self.maze.getStartPos()
             self.lastposition = None
             self.goalDone = False
@@ -93,15 +95,16 @@ class MazeBot:
             y = time.time()
             while a != True:
                 x += 1
-                #print(self.map())
+                print(self.map())
                 #print(x)
                 #if x/30 == int(x/30):
                 #    a = self.blocked
                 #print(a)
                 a = self.walk()
-                #time.sleep(0.05)
+                time.sleep(0.05)
             p = time.time()
             print(self.map())
             print("The bot had to take %d steps and it took %d seconds" % (x, p - y))
+            bot = MazeBot()
 
 # vim: set expandtab    

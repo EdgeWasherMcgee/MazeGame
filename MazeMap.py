@@ -50,7 +50,7 @@ class Maze:
 
 
     def getStartPos( self ):
-        return (start_x, start_y)
+        return (self.start_x, self.start_y)
 
     def __fillWithWalls(self):
         for y in range(self.size_y):
@@ -82,11 +82,10 @@ class Maze:
             for x in range( self.size_x ):
                 if self.isWall(x,y):
                     rslt += "O"
+                elif self.isGoal(x,y):
+                    rslt += '\033[32mX\033[39m'
                 else:
-                    if self.isGoal(x,y):
-                        rslt += '\033[32mX\033[39m'
-                    else:
-                        rslt += " "
+                    rslt += " "
             rslt += "\n"
 
         return rslt
