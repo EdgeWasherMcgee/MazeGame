@@ -26,8 +26,7 @@ class Maze:
             print("Should be called with odd arguments")
             return
 
-        self.size_x = size_x
-        self.size_y = size_y
+        self.size = (size_x,size_y)
 
         self.createMaze()
 
@@ -38,10 +37,10 @@ class Maze:
         self.M = []
 
         self.__fillWithWalls()
-        self.start_x = 1 + 2 * random.randrange( (self.size_x - 1) / 2)
-        self.start_y = 1 + 2 * random.randrange( (self.size_y - 1) / 2)
+        self.start[0] = 1 + 2 * random.randrange( (self.size[0] - 1) / 2)
+        self.start[1] = 1 + 2 * random.randrange( (self.size[1] - 1) / 2)
 
-        self.MazeWalk(self.start_x, self.start_y)
+        self.MazeWalk(self.start)
 
         # Put an apple in one of the tails
         i = random.randrange( len( self.tails ) )
@@ -53,9 +52,9 @@ class Maze:
         return (self.start_x, self.start_y)
 
     def __fillWithWalls(self):
-        for y in range(self.size_y):
+        for y in range(self.size[1]):
             row = list()
-            for x in range(self.size_x):
+            for x in range(self.size[0]):
                 row.append( Maze.wallObject )
             self.M.append( row )
 
@@ -67,10 +66,10 @@ class Maze:
     
     def isDiggable( self, x, y ):
         if x <= 0: return False
-        if x >=  self.size_x - 1: return False
+        if x >=  self.size[0] - 1: return False
         if y <= 0: return False
-        if y >=  self.size_y - 1: return False
-        return self.isWall( x, y)
+        if y >=  self.size[1] - 1: return False
+        return self.isWall( (x, y))
 
     def dig( self, fr, step ):
         self.M[ fr[1] + int(step[1] / 2) ][ fr[0] + int(step[0] / 2)] = Maze.spaceObject
@@ -78,37 +77,37 @@ class Maze:
 
     def __str__( self ):
         rslt = ""
-        for y in range( self.size_y ):
-            for x in range( self.size_x ):
-                if self.isWall(x,y):
+        for y in range( self.size[1] ):
+            for x in range( self.size[0] ):
+                if self.isWall((x,y)):
                     rslt += "O"
                 else:
-                    if self.isGoal(x,y):
+                    if self.isGoal((x,y)):
                         rslt += '\033[32mX\033[39m'
                     else:
                         rslt += " "
             rslt += "\n"
 
         return rslt
+    
+    up = (0,-2)
+    down = (0,2)
+    left = (-2, 0)
+    right = (2,0)
 
-    #directions = [ (1,0), (0,1), (-1,0), (0,-1) ]
-
-
-
-    def MazeWalk( self, start_x, start_y ):
+    def MazeWalk( self, start ):
 
         # Check calling variables
-        if 0 == start_x % 2 or 0 == start_x % 2:
+        if 0 == start[0] % 2 or 0 == start[1] % 2:
             print("Should be called with odd arguments")
             return
 
         # Make a list that tells the way back. 
         last_pos = []
 
-        here_x = start_x
-        here_y = start_y
+        here = start
 
-        self.M[ here_y ][ here_x ] = Maze.spaceObject
+        self.M[ here[1] ][ here[0] ] = Maze.spaceObject
 
         # 1. see if there is a way to go
         # 2. if so take the step and save last place
@@ -118,30 +117,30 @@ class Maze:
     
         while True:
             #print( self )
-            avail_dirs = [ (2,0), (0,2), (-2,0), (0,-2) ]
+            avail_dirs = [ left,right,up,down]  
             dirs = []
             for d in avail_dirs:
-                if self.isDiggable( here_x + d[0], here_y + d[1] ):
+                if self.isDiggable( here[0] + d[0], here[1] + d[1] ):
                     dirs.append( d )
 
             if 0 == len( dirs ):
                 # check if we are at the starting position. then leave
                 if forward:
-                    self.tails.append( (here_x, here_y) )
+                    self.tails.append( here )
 
                 if len( last_pos ) == 0: return 
                 # take a step back
-                (here_x,here_y) = last_pos.pop()
+                here = last_pos.pop()
                 forward = False
             else:
                 # Add current position to last_pos
-                last_pos.append( (here_x, here_y) )
+                last_pos.append( here )
                 # select one of the directions
                 step = dirs[ random.randint(0, len(dirs) - 1) ]
                 # take that step and dig it
-                self.dig( (here_x,here_y), step)
-                here_x += step[0]
-                here_y += step[1]
+                self.dig( here, step)
+                here[0] += step[0]
+                here[1] += step[1]
                 forward = True
                 # start over
 
