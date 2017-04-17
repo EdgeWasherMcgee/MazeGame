@@ -20,7 +20,7 @@ class MazeBot:
             rslt = ""
             for y in range(len(map_list2)):
                 for x in range(len(map_list2[0])):
-                    if self.maze.isWall(x, y):
+                    if self.maze.isWall((x, y)):
                         rslt += '\033[42m \033[49m'
                     elif self.isApple((x, y)):
                         rslt += '\033[32mX\033[39m'
@@ -37,7 +37,7 @@ class MazeBot:
             return self.map()
 
         def isApple(self, pos):
-            goalReached = self.maze.isGoal(pos[0], pos[1])
+            goalReached = self.maze.isGoal(pos)
             return goalReached
 
         def radar(self):
@@ -50,7 +50,7 @@ class MazeBot:
                     break
                 block = self.isBlocked(new_pos)
 
-                if block == False and self.maze.isWall(new_pos[0], new_pos[1]) == False:
+                if block == False and self.maze.isWall(new_pos) == False:
                     self.walkable.append(new_pos)
 
         def isBlocked(self, pos):

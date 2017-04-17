@@ -35,10 +35,13 @@ class Maze:
 
         self.tails = []
         self.M = []
+        self.start = (None,None)
 
         self.__fillWithWalls()
-        self.start[0] = 1 + 2 * random.randrange( (self.size[0] - 1) / 2)
-        self.start[1] = 1 + 2 * random.randrange( (self.size[1] - 1) / 2)
+        self.start = (
+                1 + 2 * random.randrange( (self.size[0] - 1) / 2),
+                1 + 2 * random.randrange( (self.size[1] - 1) / 2)
+                )
 
         self.MazeWalk(self.start)
 
@@ -49,7 +52,7 @@ class Maze:
 
 
     def getStartPos( self ):
-        return (self.start_x, self.start_y)
+        return self.start
 
     def __fillWithWalls(self):
         for y in range(self.size[1]):
@@ -58,18 +61,18 @@ class Maze:
                 row.append( Maze.wallObject )
             self.M.append( row )
 
-    def isWall( self, x, y ):
-        return self.M[y][x] == Maze.wallObject
+    def isWall( self, pos ):
+        return self.M[pos[1]][pos[0]] == Maze.wallObject
 
-    def isGoal( self, x, y ):
-        return self.M[y][x] == Maze.goalObject
+    def isGoal( self, pos ):
+        return self.M[pos[1]][pos[0]] == Maze.goalObject
     
-    def isDiggable( self, x, y ):
-        if x <= 0: return False
-        if x >=  self.size[0] - 1: return False
-        if y <= 0: return False
-        if y >=  self.size[1] - 1: return False
-        return self.isWall( (x, y))
+    def isDiggable( self, pos ):
+        if pos[0] <= 0: return False
+        if pos[0] >=  self.size[0] - 1: return False
+        if pos[1] <= 0: return False
+        if pos[1] >=  self.size[1] - 1: return False
+        return self.isWall( pos )
 
     def dig( self, fr, step ):
         self.M[ fr[1] + int(step[1] / 2) ][ fr[0] + int(step[0] / 2)] = Maze.spaceObject
@@ -79,10 +82,11 @@ class Maze:
         rslt = ""
         for y in range( self.size[1] ):
             for x in range( self.size[0] ):
-                if self.isWall((x,y)):
+                pos = (x,y)
+                if self.isWall(pos):
                     rslt += "O"
                 else:
-                    if self.isGoal((x,y)):
+                    if self.isGoal(pos):
                         rslt += '\033[32mX\033[39m'
                     else:
                         rslt += " "
@@ -117,10 +121,10 @@ class Maze:
     
         while True:
             #print( self )
-            avail_dirs = [ left,right,up,down]  
+            avail_dirs = [ self.left,self.right,self.up,self.down]  
             dirs = []
             for d in avail_dirs:
-                if self.isDiggable( here[0] + d[0], here[1] + d[1] ):
+                if self.isDiggable( (here[0] + d[0], here[1] + d[1])):
                     dirs.append( d )
 
             if 0 == len( dirs ):
@@ -139,8 +143,7 @@ class Maze:
                 step = dirs[ random.randint(0, len(dirs) - 1) ]
                 # take that step and dig it
                 self.dig( here, step)
-                here[0] += step[0]
-                here[1] += step[1]
+                here = ( here[0] + step[0], here[1] + step[1] )
                 forward = True
                 # start over
 
