@@ -6,9 +6,9 @@ import copy
 import MazeMap
 import random
 class MazeBot:
-        def __init__(self):
+        def __init__(self, pos1=71, pos2=31):
             self.blocked = []
-            self.maze = MazeMap.Maze(81,31)
+            self.maze = MazeMap.Maze(pos1, pos2)
             self.position = self.maze.getStartPos()
             self.lastposition = None
             self.goalDone = False
@@ -25,7 +25,9 @@ class MazeBot:
                     if self.maze.isWall(x, y):
                         rslt += '\033[42m \033[49m'
                     elif self.isApple(x, y):
-                        rslt += '\033[32mX\033[39m'
+                        rslt += '\033[46m \033[49m'
+                    elif self.maze.getStartPos() == (x, y):
+                        rslt += '\033[45m \033[49m'
                     elif map_list2[y][x] == "botObject":
                         rslt += '\033[35mY\033[39m\033[52m\033[49m'
                     elif self.isBlocked(x, y):
@@ -33,7 +35,7 @@ class MazeBot:
                     else:
                         rslt += ' '
                 rslt += '\n'
-            return "\033c" + rslt
+            return "\033[f" + rslt
 
 
 
@@ -96,15 +98,29 @@ class MazeBot:
             while a != True:
                 x += 1
                 print(self.map())
+                if x == 1:
+                    print('\033c')
+                #if x%3 == 0:
                 #print(x)
                 #if x/30 == int(x/30):
                 #    a = self.blocked
                 #print(a)
                 a = self.walk()
-                time.sleep(0.05)
+                time.sleep(0.041)
             p = time.time()
-            print(self.map())
+            print('\033c')
             print("The bot had to take %d steps and it took %d seconds" % (x, p - y))
-            bot = MazeBot()
+            restart = input("Do you want to start again?\n")
+            print(self.map())
+            if restart.lower() == 'yes' or restart.lower() == 'y':
+                ps1 = input("SizeX")
+                ps2 = input("SizeY")
+                if ps1 == '' and ps2 == '':
+                    self.__init__(71, 31)
+                else:
+                    self.__init__(int(int(ps1), int(ps2)))
+                self.engine()
+            else:
+                print("Bye!")
 
 # vim: set expandtab    
