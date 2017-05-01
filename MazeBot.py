@@ -5,6 +5,7 @@ import time
 import copy
 import MazeMap
 import random
+from ANSI import *
 class MazeBot:
         def __init__(self, pos1=71, pos2=31):
             self.blocked = []
@@ -16,15 +17,22 @@ class MazeBot:
             self.map_list = copy.deepcopy(self.maze.M)
 
 
+        def printB(self, x, y):
+            return "\033[%d;%df" % (y, x) + ANSI.redB + ' ' + ANSI.defaultB
+
+        def printY(self):
+            return "\033[%d;%df" % (self.position[1], self.position[0]) + ANSI.magentaB + ' ' + ANSI.defaultB
+
+
         def map(self):
             map_list2 = copy.deepcopy(self.map_list)
             map_list2[self.position[1]][self.position[0]] = 'botObject'
             rslt = ""
             for y in range(len(map_list2)):
                 for x in range(len(map_list2[0])):
-                    if self.maze.isWall(x, y):
-                        rslt += '\033[42m \033[49m'
-                    elif self.isApple(x, y):
+                    #if self.maze.isWall(x, y):
+                        #rslt += '\033[42m \033[49m'
+                    if self.isApple(x, y):
                         rslt += '\033[46m \033[49m'
                     elif self.maze.getStartPos() == (x, y):
                         rslt += '\033[45m \033[49m'
@@ -82,10 +90,12 @@ class MazeBot:
 
                 if self.end and len(self.walkable) > 2:
                     self.blocked.append(self.lastposition)
+                    self.printB(self.lastposition[0], self.lastposition[1])
                     self.end = False
 
                 rand = random.randrange(len(options))
                 self.lastposition = self.position
+                print(self.printY())
                 self.position = options[rand]
 
 
@@ -95,11 +105,11 @@ class MazeBot:
             a = None
             x = 0
             y = time.time()
+            print('\033c')
+            print(self.map())
             while a != True:
                 x += 1
-                print(self.map())
-                if x == 1:
-                    print('\033c')
+                #print(self.map())
                 #if x%3 == 0:
                 #print(x)
                 #if x/30 == int(x/30):
@@ -108,10 +118,10 @@ class MazeBot:
                 a = self.walk()
                 time.sleep(0.041)
             p = time.time()
-            print('\033c')
+            '\033[f'
             print("The bot had to take %d steps and it took %d seconds" % (x, p - y))
+            #print(self.map())
             restart = input("Do you want to start again?\n")
-            print(self.map())
             if restart.lower() == 'yes' or restart.lower() == 'y':
                 ps1 = input("SizeX")
                 ps2 = input("SizeY")
@@ -122,5 +132,4 @@ class MazeBot:
                 self.engine()
             else:
                 print("Bye!")
-
 # vim: set expandtab    
