@@ -30,9 +30,9 @@ class MazeBot:
             rslt = ""
             for y in range(len(map_list2)):
                 for x in range(len(map_list2[0])):
-                    #if self.maze.isWall(x, y):
-                        #rslt += '\033[42m \033[49m'
-                    if self.isApple(x, y):
+                    if self.maze.isWall(x, y):
+                        rslt += '\033[42m \033[49m'
+                    elif self.isApple(x, y):
                         rslt += '\033[46m \033[49m'
                     elif self.maze.getStartPos() == (x, y):
                         rslt += '\033[45m \033[49m'
@@ -95,7 +95,7 @@ class MazeBot:
 
                 rand = random.randrange(len(options))
                 self.lastposition = self.position
-                print(self.printY())
+                #print(self.printY())
                 self.position = options[rand]
 
 
@@ -109,7 +109,7 @@ class MazeBot:
             print(self.map())
             while a != True:
                 x += 1
-                #print(self.map())
+                print(self.map())
                 #if x%3 == 0:
                 #print(x)
                 #if x/30 == int(x/30):
